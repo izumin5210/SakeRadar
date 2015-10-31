@@ -10,6 +10,7 @@ import info.izumin.android.sakeradar.R;
 import info.izumin.android.sakeradar.module.app.AppComponent;
 
 public class MainActivity extends AppCompatActivity {
+    public static final String TAG = MainActivity.class.getSimpleName();
 
     @Inject MainActivityHelper mHelper;
 

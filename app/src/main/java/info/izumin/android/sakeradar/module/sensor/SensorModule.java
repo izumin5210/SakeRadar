@@ -32,4 +32,10 @@ public class SensorModule {
     MagneticFieldMeter provideMagneticFieldMeter(SensorManager manager) {
         return new MagneticFieldMeter(manager);
     }
+
+    @Provides
+    @Singleton
+    LocationObservable provideLocationObservable(Context context) {
+        return new LocationObservable(context);
+    }
 }

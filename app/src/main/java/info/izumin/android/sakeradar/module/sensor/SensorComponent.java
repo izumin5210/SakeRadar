@@ -19,4 +19,5 @@ public interface SensorComponent {
 
     Accelerometer accelerometer();
     MagneticFieldMeter magneticFieldMeter();
+    LocationObservable locationObservable();
 }

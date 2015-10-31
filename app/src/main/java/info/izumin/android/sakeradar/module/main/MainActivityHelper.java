@@ -9,10 +9,9 @@ import info.izumin.android.sakeradar.R;
 import info.izumin.android.sakeradar.databinding.ActivityMainBinding;
 import info.izumin.android.sakeradar.module.sensor.Accelerometer;
 import info.izumin.android.sakeradar.module.sensor.DaggerSensorComponent;
+import info.izumin.android.sakeradar.module.sensor.LocationObservable;
 import info.izumin.android.sakeradar.module.sensor.MagneticFieldMeter;
 import info.izumin.android.sakeradar.module.sensor.SensorModule;
-import info.izumin.android.sakeradar.module.sensor.SensorObservable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -23,6 +22,7 @@ public class MainActivityHelper {
 
     @Inject Accelerometer mAccelerometer;
     @Inject MagneticFieldMeter mMagneticFieldMeter;
+    @Inject LocationObservable mLocationObservable;
 
     private final MainActivity mActivity;
 
@@ -37,27 +37,24 @@ public class MainActivityHelper {
         ActivityMainBinding binding = DataBindingUtil.setContentView(mActivity, R.layout.activity_main);
         binding.setAcc(mAccelerometer);
         binding.setMag(mMagneticFieldMeter);
+        binding.setLocation(mLocationObservable);
     }
 
     public void onResume() {
         mAccelerometer.start();
         mMagneticFieldMeter.start();
+        mLocationObservable.start();
         mSubscriptions = new CompositeSubscription();
-        for (SensorObservable observable : new SensorObservable[]{ mAccelerometer, mMagneticFieldMeter }) {
-            for (int i = 0; i < 3; i++) {
-                mSubscriptions.add(
-                        observable.observe(i)
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe()
-                );
-            }
-        }
+        mSubscriptions.add(mAccelerometer.observe().subscribe());
+        mSubscriptions.add(mMagneticFieldMeter.observe().subscribe());
+        mSubscriptions.add(mLocationObservable.observe().subscribe());
     }
 
     public void onStop() {
+        mSubscriptions.unsubscribe();
         mAccelerometer.stop();
         mMagneticFieldMeter.stop();
-        mSubscriptions.unsubscribe();
+        mLocationObservable.stop();
         mSubscriptions.clear();
     }
 
