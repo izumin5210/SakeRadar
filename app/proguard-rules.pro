@@ -30,3 +30,5 @@
 -keep class retrofit.** { *; }
 -keepattributes Signature
 -keepattributes Exceptions
+
+-dontwarn android.databinding.**
