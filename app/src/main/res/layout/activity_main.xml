@@ -5,6 +5,7 @@
     <data>
         <variable name="acc" type="info.izumin.android.sakeradar.module.sensor.Accelerometer" />
         <variable name="mag" type="info.izumin.android.sakeradar.module.sensor.MagneticFieldMeter" />
+        <variable name="location" type="info.izumin.android.sakeradar.module.sensor.LocationObservable" />
     </data>
     <LinearLayout
         android:layout_width="match_parent"
@@ -118,6 +119,43 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{String.valueOf(mag.z)}"
+                    tools:text="100" />
+            </TableRow>
+
+            <TableRow>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:text="location"
+                    android:layout_span="2" />
+            </TableRow>
+
+            <TableRow>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:text="latitude" />
+
+                <TextView android:id="@+id/text_lat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{String.valueOf(location.latitude)}"
+                    tools:text="100" />
+            </TableRow>
+
+            <TableRow>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:text="longitude" />
+
+                <TextView android:id="@+id/text_lng"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{String.valueOf(location.longitude)}"
                     tools:text="100" />
             </TableRow>
         </TableLayout>
