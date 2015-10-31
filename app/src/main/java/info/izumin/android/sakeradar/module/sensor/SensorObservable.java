@@ -6,6 +6,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.util.Pair;
 import android.util.SparseIntArray;
 
 import java.util.ArrayList;
@@ -80,19 +81,23 @@ public abstract class SensorObservable extends BaseObservable implements SensorE
         mSensorManager.unregisterListener(this);
     }
 
-    public Observable<Float> observe(final int index) {
+    public Observable<Pair<Integer, Float>> observe() {
+        return Observable.merge(observe(0), observe(1), observe(2));
+    }
+
+    private Observable<Pair<Integer, Float>> observe(final int index) {
         return Observable.create(getOnSubscribe(index))
                 .buffer(10)
                 .map(floats -> {
                     Collections.sort(floats);
                     return floats.get(floats.size() / 2);
                 })
-                .scan((acc, value) -> {
-                    mValues[index] = ALPHA * acc + (1 - ALPHA) * value;
+                .scan((acc, value) -> ALPHA * acc + (1 - ALPHA) * value)
+                .doOnNext(aFloat -> {
+                    mValues[index] = aFloat;
                     notifyPropertyChanged(mBrMap.get(index));
-                    return mValues[index];
                 })
-                .publish().refCount();
+                .map(aFloat -> new Pair<>(index, aFloat));
     }
 
     private Observable.OnSubscribe<Float> getOnSubscribe(final int index) {
